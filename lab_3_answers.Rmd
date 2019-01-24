@@ -1,0 +1,43 @@
+---
+title: "lab_3_answers"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+library(ggplot2)
+library(datasets)
+library(tidyverse)
+mtcars <- mutate(mtcars, vs = ifelse(vs == 1, "V-shaped", "Non V-shaped"),
+                         am = ifelse(am == 1, "Automatic", "Manual")) 
+mtcars$wt <- mtcars$wt/2
+mtcars$gear <- sapply(as.character(mtcars$gear), paste, "gears", sep=" ")
+head(mtcars)
+```
+
+```{r,echo=F,fig.width=8,fig.height=8,fig.align='center'}
+mg <- ggplot(mtcars, aes(x = mpg, y = wt, color = as.factor(am), shape = as.factor(am) )) + 
+      geom_point(size = 3) + 
+      facet_grid(as.factor(vs) ~ as.factor(gear), labeller = label_context) + 
+      theme_bw(base_size = 15) + theme(axis.text.x = element_text(angle=45)) +
+      scale_color_manual("Transmission", values=c("navy", "orange")) + 
+      xlab("Miles/(US) gallon") + ylab("Vehicle weight (tons)") + 
+      labs(color = "Transmission", shape="Transmission") +
+      theme(legend.position = c(0.8, 0.90), legend.background = element_rect(color=NA,fill=NA))
+      
+print(mg)
+```
+
+```{r,echo=F,fig.width=7,fig.height=7,fig.align='center'}
+cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+ds <- ggplot(mpg, aes(displ, hwy, colour = class, fill = class)) +
+      geom_point() +
+      geom_smooth(alpha = 0.4) +
+      scale_fill_manual("Car type", values = cbPalette) + 
+      scale_colour_manual("Car type", values = cbPalette) +
+      theme_bw(base_size = 18) +
+      xlab("Displacement (liters)") + ylab("Highway miles/(US) gallon") +
+      theme(legend.position = c(0.8, 0.8), legend.background = element_rect(fill=alpha('white', 0)))
+ds
+```
